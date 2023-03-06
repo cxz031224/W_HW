@@ -1,0 +1,41 @@
+#include<opencv2/opencv.hpp>
+#include<iostream>
+using namespace cv;
+using namespace std;
+void colorReduce(Mat& inputImage,Mat& outputImage);
+
+int main()
+{
+	Mat srcImage=imread("lty.jpg");
+	imshow("srcImage",srcImage);
+
+	Mat dstImage;
+	dstImage(srcImage.rows,srcImage.cols,srcImage.type());
+
+	colorReduce(srcImage,dstImage);
+
+	imshow("dstImage",dstImage);
+	waitKey(0);
+}
+
+void colorReduce(Mat& inputImage,Mat& outputImage)
+{
+	outputImage=inputImage.clone();
+	int row=outputImage.rows;
+	int col=outputImage.cols*outputImage.channels();
+	uchar threshold=100;
+
+	for(int i=0;i<row;i++)
+	{
+		unchar* data=outputImage.ptr<uchar>(i);
+		for(int j=0;j+3<col;j+=3)
+		{
+			int ave=(data[j]+data[j+1]+data[j+2])/3;
+			if(ave>threshold)
+				ave=255;
+			else ave=0;
+			data[j]=data[j+1]=data[j+2]=ave;
+		}
+	}
+}
+

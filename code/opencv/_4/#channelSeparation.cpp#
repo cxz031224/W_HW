@@ -1,0 +1,29 @@
+#include<opencv2/opencv.hpp>
+#include<iostream>
+using namespace cv;
+using namespace std;
+
+void channelSeparation(Mat& inputImage,Mat& outputImage_1,Mat& outputImage_2,Mat& outputImage_3);
+
+int main()
+{
+	Mat srcImage=imread("1.jpg"),dstImage_1,dstImage_2,dstImage_3;
+	imshow("srcImage",srcImage);
+
+	channelSeparation(srcImage,dstImage_1,dstImage_2,dstImage_3);
+
+	imshow("dstImage_1",dstImage_1);
+	imshow("dstImage_2",dstImage_2);
+	imshow("dstImage_3",dstImage_3);
+
+	waitKey(0);	
+}
+
+void channelSeparation(Mat& inputImage,Mat& outputImage_1,Mat& outputImage_2,Mat& outputImage_3)
+{
+	vector<Mat> channels;
+	split(inputImage,channels);
+	outputImage_1=channels.at(0);
+	outputImage_2=channels.at(1);
+	outputImage_3=channels.at(2);
+}

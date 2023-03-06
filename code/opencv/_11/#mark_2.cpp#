@@ -1,0 +1,34 @@
+#include<iostream>
+#include<opencv2/opencv.hpp>
+using namespace std;
+using namespace cv;
+Mat labels,stats,centroids;
+
+int main()
+{
+	Mat img=imread("11.png"),src;
+	imshow("img",img);
+
+	threshold(img,src,100,255,THRESH_BINARY_INV);
+	erode(src,src,getStructuringElement(MORPH_RECT,Size(7,7)));
+	dilate(src,src,getStructuringElement(MORPH_ELLIPSE,Size(23,23)));
+
+	vector<Mat>channels;
+	split(src,channels);
+	Mat dst=channels.at(0);
+	int count=connectedComponentsWithStats(dst,labels,stats,centroids);
+	imshow("src",src);
+
+	for(int i=1;i<count;i++)
+	{
+		Vec2d pt=centroids.at<Vec2d>(1,0);
+		int x=stats.at<int>(i,CC_STAT_LEFT);
+		int y=stats.at<int>(i,CC_STAT_TOP);
+		int width=stats.at<int>(i,CC_STAT_WIDTH);
+		int height=stats.at<int>(i,CC_STAT_HEIGHT);
+		rectangle(img,Rect(x,y,width,height),Scalar(0,0,255),1,8,0);
+	}
+	imshow("ok",img);
+	cout<<count-1<<endl;
+	waitKey(0);
+}
